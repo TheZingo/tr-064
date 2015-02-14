@@ -78,24 +78,63 @@ var showDevice = function (device) {
 }
 ```
 
-##
-Methods
 
-### initTR064Device(host, port, callback)
+## Samples
+
+### Get FritzBox CallList
+```javascript
+tr064.initTR064Device("fritz.box", 49000, function (err, device) {
+	if (!err) {	
+		var service = device.services["urn:dslforum-org:service:X_AVM-DE_OnTel:1"];
+		service.actions.GetCallList(function(err, result){
+			if(err) { console.log(err); return; }
+			console.log("Got URL: " + result.NewCallListURL);			
+		});
+	} else {
+		console.log("error - TR064: " + err);
+	}
+}, {user: "username", password:"password"});
+```
+Tested with FritzBox 7390 on Fritz!Os 06.03 and a user account with phone/dial rights. 
+The result is an URL to get the call list as XML file.
+
+
+### Get Connection Details
+```javascript
+tr064.initTR064Device("fritz.box", 49000, function (err, device) {
+	if (!err) {	
+		var service = device.services["urn:dslforum-org:service:WANCommonInterfaceConfig:1"];
+		service.actions.GetCommonLinkProperties(function(err, result) {
+			if(err) {console.log(err); console.log(result); return;}
+			console.log(result);
+		});
+	} else {
+		console.log("error - TR064: " + err);
+	}
+}, {user: "username", password:"password"});
+```
+Tested with FritzBox 7170 with firmware 29.04.88 using username "admin" and webinterface password.
+
+
+## Methods
+
+### initTR064Device(host, port, callback, auth)
 
 Initialize the TR - 064 UPnP controller
 
 * `host` - hostname of the device 
 * `port` - port of the device(standard: 49000) 
 * `callback` - (err, device)
+* `auth` - optional: object with user/password
 
-### initIGDDevice(host, port, callback)
+### initIGDDevice(host, port, callback, auth)
 
 Initialize the TR - 064 IGD controller
 
 * `host` - hostname of the device 
 * `port` - port of the device(standard: 49000) 
 * `callback` - (err, device)
+* `auth` - optional: object with user/password
 
 ### device.meta
 
